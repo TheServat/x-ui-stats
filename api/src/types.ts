@@ -4,6 +4,25 @@ export interface ListResponse {
   obj: Inbound[];
 }
 
+export interface ISetting {
+
+  "clients":
+  {
+    "id": string,//"b3ac2bed-27c7-4317-abca-68c5297ccd35",
+    "flow": string, //"",
+    "email": string, //"1bqlp8hqj",
+    "limitIp": number, //0,
+    "totalGB": number, //0,
+    "expiryTime": number, //0,
+    "enable": boolean, //true,
+    "tgId": string, //"",
+    "subId": string, //""
+  }[]
+  ,
+  "decryption": string,//"none",
+  "fallbacks": any[]
+
+}
 export interface Inbound {
   id: number;
   up: number;

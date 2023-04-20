@@ -3,11 +3,11 @@ import Axios from 'axios-observable';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { concatMap, map, catchError } from 'rxjs';
-import { ListResponse } from './types';
+import { ISetting, ListResponse } from './types';
 @Injectable()
 export class AppService {
   async getInfo(config: string) {
-    const accountConfig = this.getDomainPort(config);
+    const accountConfig = this.encodeConfig(config);
     const server = await this.findServer(accountConfig.domain);
     const instance = Axios.create({
       withCredentials: true,
@@ -36,14 +36,25 @@ export class AppService {
           if (!inbound) {
             throw new BadRequestException('اطلاعات وارد شده یافت نشد');
           }
-          return inbound;
+          const settings = JSON.parse(inbound.settings) as ISetting;
+          const client = settings.clients.find(
+            (s) => s.id === accountConfig.uuid,
+          );
+          if (!client) {
+            throw new BadRequestException('اطلاعات وارد شده یافت نشد');
+          }
+          return {
+            ...client,
+            ...inbound.clientStats.find((s) => s.email === client.email),
+            id: inbound.remark,
+          };
         }),
       );
   }
-  private getDomainPort(config: string) {
+  private encodeConfig(config: string) {
     if (config.startsWith('vless://')) {
       const url = new URL(config.replace('vless://', 'http://'));
-      return { domain: url.hostname, port: +url.port };
+      return { domain: url.hostname, port: +url.port, uuid: url.username };
     }
     if (config.startsWith('vmess://')) {
       const json = JSON.parse(
@@ -61,7 +72,7 @@ export class AppService {
         path: string; //"/",
         tls: string; //"none"
       };
-      return { domain: json.add, port: +json.port };
+      return { domain: json.add, port: +json.port, uuid: json.id };
     }
     throw new BadRequestException('اطلاعات وارد شده یافت نشد');
   }
@@ -69,7 +80,9 @@ export class AppService {
   private async findServer(domain: string) {
     try {
       const servers = JSON.parse(
-        (await readFile(join(__dirname, '../servers.json'))).toString('utf-8'),
+        (await readFile(join(__dirname, '../../servers.json'))).toString(
+          'utf-8',
+        ),
       ) as {
         domain: string;
         port: number;
