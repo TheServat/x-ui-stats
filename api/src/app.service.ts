@@ -18,8 +18,7 @@ export class AppService {
       .pipe(
         concatMap((response) => {
           const cookie = response.headers['set-cookie'];
-          console.log(cookie);
-          return instance.post<ListResponse>('/xui/inbound/list', undefined, {
+          return instance.post<ListResponse>('/panel/inbound/list', {}, {
             headers: { Cookie: cookie[0] },
           });
         }),
