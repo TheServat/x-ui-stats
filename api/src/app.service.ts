@@ -63,7 +63,7 @@ export class AppService {
               ? client.expiryTime
               : inbound.expiryTime,
             limitIp: inbound.listen || client.limitIp,
-            totalGB: client.totalGB || inbound.total,
+            total: client.totalGB || inbound.total,
             down,
             up,
           };
