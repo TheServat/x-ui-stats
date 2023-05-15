@@ -51,7 +51,6 @@ export class AppService {
           const clientStat = inbound.clientStats.find(
             (s) => s.email === client.email,
           );
-          console.log(JSON.stringify(inbound, null, 2), clientStat);
           if (clientStat) {
             down = clientStat.down;
             up = clientStat.up;
@@ -65,7 +64,8 @@ export class AppService {
               : inbound.expiryTime,
             limitIp: inbound.listen || client.limitIp,
             totalGB: client.totalGB || inbound.total,
-            ...inbound.clientStats.find((s) => s.email === client.email),
+            down,
+            up,
           };
         }),
       );
