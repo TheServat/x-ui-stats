@@ -18,9 +18,13 @@ export class AppService {
       .pipe(
         concatMap((response) => {
           const cookie = response.headers['set-cookie'];
-          return instance.post<ListResponse>('/panel/inbound/list', {}, {
-            headers: { Cookie: cookie[0] },
-          });
+          return instance.post<ListResponse>(
+            '/panel/inbound/list',
+            {},
+            {
+              headers: { Cookie: cookie[0] },
+            },
+          );
         }),
       )
       .pipe(
@@ -44,8 +48,14 @@ export class AppService {
           }
           return {
             ...client,
+            id: inbound.remark + '-' + client.email,
+            enable: inbound.enable === false ? false : client.enable,
+            expiryTime: client.expiryTime
+              ? client.expiryTime
+              : inbound.expiryTime,
+            limitIp: inbound.listen || client.limitIp,
+            totalGB: client.totalGB || inbound.total,
             ...inbound.clientStats.find((s) => s.email === client.email),
-            id: inbound.remark,
           };
         }),
       );
