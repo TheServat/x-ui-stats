@@ -46,6 +46,15 @@ export class AppService {
           if (!client) {
             throw new BadRequestException('اطلاعات وارد شده یافت نشد');
           }
+          let down = inbound.down;
+          let up = inbound.up;
+          const clientStats = inbound.clientStats.find(
+            (s) => s.email === client.email,
+          );
+          if (clientStats) {
+            down = clientStats.down;
+            up = clientStats.up;
+          }
           return {
             ...client,
             id: inbound.remark + '-' + client.email,
