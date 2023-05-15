@@ -15,7 +15,7 @@
         <q-list v-if="data" bordered class="bg-white">
           <q-item clickable v-ripple class="text-center">
             <q-item-section>
-              {{ data.id }}@{{ data.email }}
+              {{ data.id }}
             </q-item-section>
           </q-item>
           <q-item clickable v-ripple class="text-center">
