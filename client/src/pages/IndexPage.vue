@@ -147,7 +147,7 @@ const progress = computed(() => {
   }
   const p = ((data.value.up + data.value.down) / data.value.total).toFixed(2)
   return {
-    label: `${p}%`,
+    label: `${p * 100}%`,
     progress: +p
   }
 })
