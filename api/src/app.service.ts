@@ -51,7 +51,7 @@ export class AppService {
           const clientStat = inbound.clientStats.find(
             (s) => s.email === client.email,
           );
-          if (clientStat) {
+          if (clientStat && clientStat.up > 0 && clientStat.down > 0) {
             down = clientStat.down;
             up = clientStat.up;
           }
